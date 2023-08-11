@@ -1,0 +1,57 @@
+html>
+<head>
+<title>Add Content</title>
+</head>
+<body>
+<header>
+<!-- Header content with navigation and logo -->
+</header>
+
+<form method="POST" action="save_content.php">
+<!-- HTML form elements to collect user input -->
+<!-- Using appropriate input types and attributes -->
+<input type="text" name="title" placeholder="Title" required>
+<textarea name="content" placeholder="Content" required></textarea>
+<input type="submit" value="Submit">
+</form>
+
+<footer>
+<!-- Footer content -->
+</footer>
+</body>
+</html>
+
+PHP (save_content.php):
+// Establish a database connection
+$host = "localhost:3306";
+$db_name = "assignmentOneDB";
+$username = "root";
+$password = "";
+
+try {
+$conn = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+die("Database connection failed: " . $e->getMessage());
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$title = $_POST["title"];
+$content = $_POST["content"];
+
+$stmt = $conn->prepare("INSERT INTO your_table_name (title, content) VALUES (:title,
+:content)");
+$stmt->bindParam(":title", $title);
+$stmt->bindParam(":content", $content);
+
+try {
+$stmt->execute();
+echo "Content saved successfully!";
+} catch(PDOException $e) {
+echo "Error: " . $e->getMessage();
+}
+}
+
+// Close the database connection
+$conn = null;
+?>
